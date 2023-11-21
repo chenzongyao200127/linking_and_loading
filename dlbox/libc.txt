@@ -1,0 +1,15 @@
+Disassembly of binary libc.dl:
+
+0000000000000000 <putchar>:
+00000000  40883D1F000000    mov [rel 0x26],dil
+00000007  48C7C001000000    mov rax,0x1
+0000000E  48C7C701000000    mov rdi,0x1
+00000015  488D350A000000    lea rsi,[rel 0x26]
+0000001C  48C7C201000000    mov rdx,0x1
+00000023  0F05              syscall
+00000025  C3                ret
+00000026  00                db 0x00
+
+0000000000000027 <exit>:
+00000027  48C7C03C000000    mov rax,0x3c
+0000002E  0F05              syscall

@@ -1,0 +1,9 @@
+Disassembly of binary main.dl:
+
+0000000000000000 <main>:
+00000000  FF159AFFFFFF      call [rel 0xffffffffffffffa0]
+00000006  FF1594FFFFFF      call [rel 0xffffffffffffffa0]
+0000000C  FF158EFFFFFF      call [rel 0xffffffffffffffa0]
+00000012  FF1588FFFFFF      call [rel 0xffffffffffffffa0]
+00000018  48C7C000000000    mov rax,0x0
+0000001F  C3                ret

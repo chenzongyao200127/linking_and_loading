@@ -59,6 +59,7 @@
   "files.associations": {
     "elf.h": "c",
     "memory": "c",
-    "mman.h": "c"
+    "mman.h": "c",
+    "stdio.h": "c"
   }
 }

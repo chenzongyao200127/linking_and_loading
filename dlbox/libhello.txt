@@ -1,0 +1,27 @@
+Disassembly of binary libhello.dl:
+
+0000000000000000 <hello>:
+00000000  488D3D2D000000    lea rdi,[rel 0x34]
+00000007  8B0530000000      mov eax,[rel 0x3d]
+0000000D  53                push rbx
+0000000E  4889FB            mov rbx,rdi
+00000011  FFC0              inc eax
+00000013  890524000000      mov [rel 0x3d],eax
+00000019  83C030            add eax,byte +0x30
+0000001C  884706            mov [rdi+0x6],al
+0000001F  0FBE3B            movsx edi,byte [rbx]
+00000022  4084FF            test dil,dil
+00000025  740B              jz 0x32
+00000027  FF1573FFFFFF      call [rel 0xffffffffffffffa0]
+0000002D  48FFC3            inc rbx
+00000030  EBED              jmp short 0x1f
+00000032  5B                pop rbx
+00000033  C3                ret
+00000034  48                rex.w
+00000035  656C              gs insb
+00000037  6C                insb
+00000038  6F                outsd
+00000039  20580A            and [rax+0xa],bl
+0000003C  0000              add [rax],al
+0000003E  0000              add [rax],al
+00000040  00                db 0x00
