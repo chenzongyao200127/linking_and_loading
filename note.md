@@ -1,58 +1,60 @@
-# What are the first a few steps exected after execve() of a ELF dynamic link binary?
+# What are the first a few steps exected after `execve()` of a ELF dynamic link binary?
 
-When an ELF (Executable and Linkable Format) dynamic link binary is executed using the `execve()` system call in a Linux environment, several steps occur in a specific sequence to set up the process for execution. Here's a detailed breakdown of the initial steps after `execve()` is invoked:
+When an ELF (Executable and Linkable Format) dynamic link binary is executed using the `execve()` system call in a Linux environment, several steps occur in a specific sequence to set up the process for execution. 
+
+Here's a detailed breakdown of the initial steps after `execve()` is invoked:
 
 1. **Loading the ELF Binary:**
    - The kernel validates the ELF header of the binary to ensure it's a valid executable. This includes checking the magic number, the file type, and the machine type.
    - The kernel reads the program headers from the ELF binary. These headers describe how the binary should be loaded into memory.
-
-    内核验证二进制文件的 ELF 头部，确保它是有效的可执行文件。这包括检查魔数（magic number）、文件类型和机器类型。
-    内核从 ELF 二进制文件中读取程序头部。这些头部描述了如何将二进制文件加载到内存中。
+   1. 内核验证二进制文件的 ELF 头部，确保它是有效的可执行文件。这包括检查魔数（magic number）、文件类型和机器类型。
+   2. 内核从 ELF 二进制文件中读取程序头部。这些头部描述了如何将二进制文件加载到内存中。
 
 2. **Setting up the Process Address Space:**
    - The kernel sets up a new address space for the process.
    - Memory regions are allocated for the binary's code (text segment), data (data segment), BSS (uninitialized data), and stack.
    - The binary is mapped into the process's address space. This involves copying the code and initialized data from the binary into the respective memory regions.
-
-    内核为进程设置新的地址空间。
-    为二进制文件的代码（文本段）、数据（数据段）、BSS（未初始化数据）和栈分配内存区域。
-    将二进制文件映射到进程的地址空间中。这涉及将代码和初始化数据从二进制文件复制到相应的内存区域。
+   1. 内核为进程设置新的地址空间。
+   2. 为二进制文件的代码（文本段）、数据（数据段）、BSS（未初始化数据）和栈分配内存区域。
+   3. 将二进制文件映射到进程的地址空间中。这涉及将代码和初始化数据从二进制文件复制到相应的内存区域。
 
 3. **Dynamic Linking:**
    - If the binary is dynamically linked (as specified in your question), the dynamic linker (`ld-linux.so.2` or `ld-linux-x86-64.so.2` for x86 and x86_64 architectures, respectively) is loaded into the process's address space.
    - The dynamic linker then parses the dynamic section of the ELF binary to identify the shared libraries that the binary depends on.
    - The necessary shared libraries are mapped into the process's address space. The dynamic linker handles any symbol resolution and relocation that needs to occur for these libraries.
 
-    如果二进制文件是动态链接的（如您的问题所述），则将动态链接器（例如 x86 和 x86_64 架构的 ld-linux.so.2 或 ld-linux-x86-64.so.2）加载到进程的地址空间中。
-    动态链接器接着解析 ELF 二进制文件的动态部分，以识别二进制文件依赖的共享库。
-    必要的共享库被映射到进程的地址空间中。动态链接器处理这些库的任何符号解析和重定位。
+   1. 如果二进制文件是动态链接的（如您的问题所述），则将动态链接器（例如 x86 和 x86_64 架构的 ld-linux.so.2 或 ld-linux-x86-64.so.2）加载到进程的地址空间中。
+   2. 动态链接器接着解析 ELF 二进制文件的动态部分，以识别二进制文件依赖的共享库。
+   3. 必要的共享库被映射到进程的地址空间中。动态链接器处理这些库的任何符号解析和重定位。
 
 4. **Initialization:**
    - The dynamic linker calls the initialization routines of the loaded shared libraries (`.init` section).
    - The dynamic linker also handles TLS (Thread-Local Storage) initialization if required by the binary or any of the shared libraries.
-
-    动态链接器调用加载的共享库的初始化例程（.init 部分）。
-    如果二进制文件或任何共享库需要，动态链接器还处理 TLS（线程本地存储）初始化。
+  
+   1. 动态链接器调用加载的共享库的初始化例程（.init 部分）。
+   2. 如果二进制文件或任何共享库需要，动态链接器还处理 TLS（线程本地存储）初始化。
 
 5. **Transfer of Control:**
    - After all the initialization is complete, the dynamic linker transfers control to the program's entry point (usually the `main` function).
    - At this point, the program begins its normal execution.
 
-    在所有初始化完成后，动态链接器将控制权转移到程序的入口点（通常是 main 函数）。
-    此时，程序开始其正常执行。
+   1. 在所有初始化完成后，动态链接器将控制权转移到程序的入口点（通常是 main 函数）。
+   2. 此时，程序开始其正常执行。
 
 6. **Stack Preparation:**
    - Just before transferring control to the program's entry point, the kernel sets up the initial stack. This stack contains the program arguments (`argv`), environment variables (`envp`), auxiliary vectors (providing information about the runtime environment), and the initial stack pointer.
 
-    在将控制权转移到程序的入口点之前，内核设置初始栈。
-    这个栈包含程序参数（argv）、环境变量（envp）、辅助向量（提供有关运行时环境的信息）和初始栈指针。
+   1. 在将控制权转移到程序的入口点之前，内核设置初始栈。
+   2. 这个栈包含程序参数（argv）、环境变量（envp）、辅助向量（提供有关运行时环境的信息）和初始栈指针。
 
 7. **Execution of `main`:**
    - The program now starts executing from its `main` function with the stack properly set up to include arguments and environment variables.
 
-    程序现在从其 main 函数开始执行，栈已正确设置，包括参数和环境变量。
+   1. 程序现在从其 main 函数开始执行，栈已正确设置，包括参数和环境变量。
 
-These steps are a high-level overview and may involve more nuanced operations depending on the specific architecture, kernel version, and the binary itself. The entire process is designed to be efficient and secure, ensuring that the binary is correctly loaded and executed in a new process context.
+These steps are a high-level overview and may involve more nuanced operations depending on the specific architecture, kernel version, and the binary itself. 
+
+The entire process is designed to be efficient and secure, ensuring that the binary is correctly loaded and executed in a new process context.
 
 ==============================================================================================================
 
